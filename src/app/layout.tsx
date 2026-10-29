@@ -6,7 +6,10 @@ import { STORE_INFO } from "@/data/catalog";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://latable-irece.com.br"),
-  title: `${STORE_INFO.brand} | Cardápio de Cestas & Gastronomia`,
+  title: "La Table",
+  icons: {
+    icon: "/favicon.ico",
+  },
   description: `${STORE_INFO.tagline} Cestas de café da manhã, boxes com vinho, linha maternidade e tábuas de frios em Irecê - BA.`,
   keywords: [
     "Cestas de café da manhã",

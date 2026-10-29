@@ -57,7 +57,7 @@ export interface StoreInfo {
 
 export const STORE_INFO: StoreInfo = {
   name: "La Table",
-  brand: "La Table por Geraldina Ribeiro",
+  brand: "La Table",
   founder: "Geraldina Ribeiro",
   tagline: "Mais que presentes, são momentos especiais.",
   bio: "Aqui, cada cesta é preparada com carinho, pensando em mais do que um presente: transformamos encontros em experiência e refeição em memórias.",

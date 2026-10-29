@@ -1,6 +1,6 @@
-# La Table por Geraldina Ribeiro - Catálogo & Link in Bio
+# La Table - Catálogo & Link in Bio
 
-Aplicação web interativa estilo *Link in Bio* / *Beacons* desenvolvida para a **La Table por Geraldina Ribeiro**, marca especializada em cestas afetivas de café da manhã, boxes de presentes sofisticados com vinhos, linha maternidade, tábuas de frios artesanais e ilhas gastronômicas (grazing table) em Irecê - BA e região.
+Aplicação web interativa estilo *Link in Bio* / *Beacons* desenvolvida para a **La Table**, marca especializada em cestas afetivas de café da manhã, boxes de presentes sofisticados com vinhos, linha maternidade, tábuas de frios artesanais e ilhas gastronômicas (grazing table) em Irecê - BA e região.
 
 ---
 
