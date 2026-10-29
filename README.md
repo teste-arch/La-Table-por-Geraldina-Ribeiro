@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# La Table por Geraldina Ribeiro - Catálogo & Link in Bio
 
-## Getting Started
+Aplicação web interativa estilo *Link in Bio* / *Beacons* desenvolvida para a **La Table por Geraldina Ribeiro**, marca especializada em cestas afetivas de café da manhã, boxes de presentes sofisticados com vinhos, linha maternidade, tábuas de frios artesanais e ilhas gastronômicas (grazing table) em Irecê - BA e região.
 
-First, run the development server:
+---
+
+## 🌟 Funcionalidades
+
+- **Design Responsivo & Elegante:** Otimizado para abertura via mobile (link na bio do Instagram) e desktop, com paleta de cores nobre e acolhedora.
+- **Cardápio Completo & Estruturado:** Dados extraídos com precisão dos 4 catálogos oficiais em PDF (`src/data/catalog.ts`).
+- **Filtros por Categoria & Busca Instantânea:** Navegação por pílulas (Café da Manhã, Boxes & Presentes, Maternidade, Tábuas, Cestas Premium e Mimos).
+- **Fotos Reais dos Produtos:** 26 imagens em alta resolução extraídas diretamente do material original.
+- **Modal de Detalhes:** Visualização completa da composição dos itens, dimensões, rendimento e observações.
+- **Seletor de Variações de Preço:** Permite escolher entre tipos de vinho (ex: Freixenet vs. DV Catena), vasos de flores (Kalanchoe vs. Orquídea) ou tamanhos de caixa.
+- **Integração com WhatsApp:** Botões de pedido direto para o WhatsApp oficial com mensagem pré-formatada do produto e variação selecionados.
+- **Seção de Mimos Agregáveis:** Bolos artesanais, fotos polaroid personalizadas, balões temáticos e adicionais.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Next.js (App Router)** - Framework React moderno com server-side rendering
+- **TypeScript** - Tipagem estrita para todos os dados do catálogo e componentes
+- **Ant Design (`antd` + `@ant-design/icons`)** - Componentes de interface de alto padrão
+- **Tailwind CSS** - Estilização utilitária e responsividade fluida
+- **@ant-design/nextjs-registry** - Renderização de estilos SSR sem FOUC
+
+---
+
+## 🚀 Como Executar
+
+### Pré-requisitos
+- Node.js 18+ instalado
+- npm ou yarn
+
+### Instalação
+
+```bash
+# Instalar dependências
+npm install
+```
+
+### Modo de Desenvolvimento
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build de Produção
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📁 Estrutura do Projeto
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+├── Conteúdo inicial/          # Catálogos em PDF e materiais originais
+├── public/
+│   └── images/
+│       ├── profile.jpeg       # Foto de perfil de Geraldina Ribeiro
+│       └── products/          # 26 fotos de alta resolução dos produtos
+├── src/
+│   ├── app/
+│   │   ├── globals.css        # Estilos globais e Tailwind
+│   │   ├── layout.tsx         # Layout raiz com AntdRegistry e tema
+│   │   └── page.tsx           # Página principal estilo Beacons/Linktree
+│   └── data/
+│       └── catalog.ts         # Tipagem e array estruturado do catálogo
+└── package.json
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📞 Contato & Encomendas
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Instagram:** [@latable_irece](https://www.instagram.com/latable_irece)
+- **WhatsApp:** +55 (74) 99999-2045
+- **Localização:** Irecê - Bahia
