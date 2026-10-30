@@ -42,7 +42,7 @@ const CATALOGS: CatalogItem[] = [
   },
   {
     id: "tabuas",
-    title: "Tábuas & Gastronomia",
+    title: "Tábuas de Frios & Ilhas Gastronômicas",
     subtitle: "Charcutaria refinada, queijo brie folhado e ilhas gastronômicas",
     href: "/catalogos/catalogo-tabuas.pdf",
     icon: <FilePdfOutlined className="text-xl text-[#9A722C]" />,
