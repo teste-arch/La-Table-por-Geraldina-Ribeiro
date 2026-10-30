@@ -1,74 +1,62 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React from "react";
 import Image from "next/image";
-import {
-  Button,
-  Input,
-  Tag,
-  Modal,
-  Badge,
-  Radio,
-  message,
-  Tooltip,
-} from "antd";
+import { Button, Space, Tooltip, message } from "antd";
 import {
   WhatsAppOutlined,
   InstagramOutlined,
   ShareAltOutlined,
   EnvironmentOutlined,
-  SearchOutlined,
-  StarFilled,
+  FilePdfOutlined,
   GiftOutlined,
-  InfoCircleOutlined,
-  CheckCircleFilled,
   CoffeeOutlined,
   HeartFilled,
 } from "@ant-design/icons";
-import {
-  STORE_INFO,
-  CATEGORIES,
-  PRODUCTS,
-  ADDONS,
-  Product,
-  ProductPriceVariation,
-  getWhatsAppOrderLink,
-} from "@/data/catalog";
+import { STORE_INFO } from "@/data/catalog";
+
+interface CatalogItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  href: string;
+  icon: React.ReactNode;
+  badge?: string;
+}
+
+const CATALOGS: CatalogItem[] = [
+  {
+    id: "cestas-boxes",
+    title: "Cestas & Box Presenteáveis",
+    subtitle: "Vinhos, queijos nobres, chocolates e presentes afetivos",
+    href: "/catalogos/catalogo-cestas-e-boxes.pdf",
+    icon: <GiftOutlined className="text-xl text-[#9A722C]" />,
+    badge: "Mais Pedido",
+  },
+  {
+    id: "cafe-da-manha",
+    title: "Café da Manhã & Afeto",
+    subtitle: "Cestas de café da manhã, boxes especiais e delícias artesanais",
+    href: "/catalogos/catalogo-cafe-da-manha.pdf",
+    icon: <CoffeeOutlined className="text-xl text-[#9A722C]" />,
+  },
+  {
+    id: "tabuas",
+    title: "Tábuas & Gastronomia",
+    subtitle: "Charcutaria refinada, queijo brie folhado e ilhas gastronômicas",
+    href: "/catalogos/catalogo-tabuas.pdf",
+    icon: <FilePdfOutlined className="text-xl text-[#9A722C]" />,
+  },
+  {
+    id: "maternidade",
+    title: "Linha Maternidade",
+    subtitle: "Cestas delicadas para a chegada do bebê e boas-vindas",
+    href: "/catalogos/catalogo-maternidade.pdf",
+    icon: <HeartFilled className="text-xl text-[#9A722C]" />,
+  },
+];
 
 export default function HomePage() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("todos");
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedVariation, setSelectedVariation] =
-    useState<ProductPriceVariation | null>(null);
-
-  // Filter products by category and search
-  const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((p) => {
-      const matchCategory =
-        selectedCategory === "todos" || p.categorySlug === selectedCategory;
-
-      const q = searchQuery.toLowerCase().trim();
-      if (!q) return matchCategory;
-
-      const matchName = p.name.toLowerCase().includes(q);
-      const matchDesc = p.shortDescription.toLowerCase().includes(q);
-      const matchCategoryName = p.category.toLowerCase().includes(q);
-      const matchItems = p.items.some((item) => item.toLowerCase().includes(q));
-
-      return matchCategory && (matchName || matchDesc || matchCategoryName || matchItems);
-    });
-  }, [selectedCategory, searchQuery]);
-
-  const handleOpenProduct = (product: Product) => {
-    setSelectedProduct(product);
-    setSelectedVariation(
-      product.priceVariations && product.priceVariations.length > 0
-        ? product.priceVariations[0]
-        : null
-    );
-  };
-
   const handleShare = async () => {
     if (typeof window !== "undefined" && navigator.share) {
       try {
@@ -82,7 +70,7 @@ export default function HomePage() {
       }
     } else if (typeof window !== "undefined") {
       navigator.clipboard.writeText(window.location.href);
-      message.success("Link do catálogo copiado para a área de transferência!");
+      message.success("Link copiado para a área de transferência!");
     }
   };
 
@@ -95,7 +83,7 @@ export default function HomePage() {
         <div className="absolute bottom-10 left-1/4 w-96 h-96 rounded-full bg-[#EFE3D5] blur-3xl" />
       </div>
 
-      <div className="relative max-w-3xl mx-auto px-4 py-8 sm:py-12 flex flex-col items-center">
+      <div className="relative max-w-xl mx-auto px-4 py-8 sm:py-12 flex flex-col items-center">
         {/* =========================================================
             HEADER & PROFILE SECTION (Beacons.ai / Linktree Aesthetic)
            ========================================================= */}
@@ -127,7 +115,10 @@ export default function HomePage() {
                 />
               </div>
             </div>
-            <span className="absolute bottom-1 right-2 w-5 h-5 rounded-full bg-[#25D366] border-2 border-white flex items-center justify-center text-[10px] text-white shadow-xs" title="Disponível para encomendas">
+            <span
+              className="absolute bottom-1 right-2 w-5 h-5 rounded-full bg-[#25D366] border-2 border-white flex items-center justify-center text-[10px] text-white shadow-xs"
+              title="Disponível para encomendas"
+            >
               ✓
             </span>
           </div>
@@ -147,14 +138,16 @@ export default function HomePage() {
           {/* Location Badge */}
           <div className="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full bg-[#F0E6D8]/70 border border-[#E4D5C3] text-xs text-[#6B5A4B]">
             <EnvironmentOutlined className="text-[#9A722C]" />
-            <span>{STORE_INFO.city} - {STORE_INFO.state} & Região</span>
+            <span>
+              {STORE_INFO.city} - {STORE_INFO.state} & Região
+            </span>
           </div>
 
           {/* Quick Contact & Social Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-3 mt-5 w-full max-w-sm">
             <a
               href={`https://wa.me/${STORE_INFO.whatsapp}?text=${encodeURIComponent(
-                "Olá Geraldina! Vi o catálogo no link da bio da La Table e gostaria de tirar uma dúvida sobre encomendas."
+                "Olá Geraldina! Vi os catálogos no link da bio da La Table e gostaria de tirar uma dúvida sobre encomendas."
               )}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -177,256 +170,123 @@ export default function HomePage() {
         </header>
 
         {/* =========================================================
-            SEARCH & CATEGORIES FILTER
+            CATALOGS SECTION (Space with large block Ant Design buttons)
            ========================================================= */}
-        <div className="w-full mb-6">
-          <Input
-            placeholder="Buscar por cesta, queijo, vinho, presente..."
-            prefix={<SearchOutlined className="text-[#9A722C] mr-1" />}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            allowClear
-            size="large"
-            className="rounded-full! border-[#E2D5C3]! bg-white/95! shadow-xs hover:border-[#9A722C]! focus:border-[#9A722C]! text-sm py-2 px-4"
-          />
-        </div>
-
-        {/* Category Navigation Pills */}
-        <div className="w-full mb-8 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-none flex items-center gap-2">
-          {CATEGORIES.map((cat) => {
-            const isSelected = selectedCategory === cat.slug;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.slug)}
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 cursor-pointer ${
-                  isSelected
-                    ? "bg-[#9A722C] text-white shadow-sm"
-                    : "bg-white/90 text-[#6A5F5B] hover:bg-white hover:text-[#2C2523] border border-[#E8DEC9]"
-                }`}
-              >
-                {cat.name}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Category Header description */}
-        {selectedCategory !== "todos" && (
-          <div className="w-full mb-6 text-center">
-            <h2 className="text-lg font-serif font-bold text-[#2C2523]">
-              {CATEGORIES.find((c) => c.slug === selectedCategory)?.name}
+        <section className="w-full max-w-md mb-8">
+          <div className="text-center mb-4">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-[#9A722C]">
+              Catálogos Oficiais em PDF
             </h2>
-            <p className="text-xs text-[#7A6A53] mt-0.5">
-              {CATEGORIES.find((c) => c.slug === selectedCategory)?.subtitle}
+            <p className="text-xs text-[#7A6A53] mt-1">
+              Toque abaixo para visualizar ou fazer download do cardápio completo
             </p>
           </div>
-        )}
 
-        {/* =========================================================
-            PRODUCTS LIST (Responsive Grid / Cards)
-           ========================================================= */}
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-5 mb-12">
-          {filteredProducts.map((product) => (
-            <div
-              key={product.id}
-              onClick={() => handleOpenProduct(product)}
-              className="group flex flex-col bg-white rounded-2xl border border-[#ECE2D2] overflow-hidden shadow-2xs hover:shadow-md transition-all duration-300 cursor-pointer hover:-translate-y-1"
-            >
-              {/* Product Image */}
-              <div className="relative w-full h-56 bg-[#F4EFEA] overflow-hidden">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
-
-                {/* Category & Badge */}
-                <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-                  <span className="px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-xs text-[11px] font-medium text-[#73541E] border border-white/60 shadow-2xs">
-                    {product.category}
-                  </span>
-                  {product.featured && (
-                    <span className="px-2 py-1 rounded-full bg-[#9A722C] text-white text-[10px] font-semibold flex items-center gap-1 shadow-2xs">
-                      <StarFilled className="text-[10px]" /> Destaque
+          <Space
+            direction="vertical"
+            size={14}
+            className="w-full"
+            style={{ width: "100%" }}
+          >
+            {CATALOGS.map((item) => (
+              <Button
+                key={item.id}
+                size="large"
+                block
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ height: "auto" }}
+                className="!py-3.5 !px-4 sm:!px-5 !rounded-2xl !bg-white/95 hover:!bg-white !border-[#E8DEC9] hover:!border-[#9A722C] !shadow-2xs hover:!shadow-md transition-all duration-300 group !text-left"
+              >
+                <span className="flex items-center justify-between w-full gap-3">
+                  <span className="flex items-center gap-3.5 min-w-0">
+                    <span className="w-11 h-11 rounded-xl bg-[#FAF4EC] flex items-center justify-center shrink-0 border border-[#ECE0D0] group-hover:bg-[#F5ECE0] transition-colors text-[#9A722C]">
+                      {item.icon}
                     </span>
-                  )}
-                </div>
-
-                {/* Price Tag Overlay bottom-right */}
-                <div className="absolute bottom-3 right-3 px-3 py-1 rounded-xl bg-white/95 backdrop-blur-xs text-xs font-bold text-[#2C2523] shadow-xs border border-white/80">
-                  {product.formattedPrice}
-                </div>
-              </div>
-
-              {/* Product Info */}
-              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-base font-serif font-bold text-[#231D1A] group-hover:text-[#9A722C] transition-colors">
-                    {product.name}
-                  </h3>
-                  <p className="text-xs text-[#6A5F5B] mt-1.5 line-clamp-2 leading-relaxed">
-                    {product.shortDescription}
-                  </p>
-
-                  {/* Dimensions or Serves badge */}
-                  <div className="flex flex-wrap gap-2 mt-3 text-[11px] text-[#7A6A53]">
-                    {product.serves && (
-                      <span className="inline-flex items-center gap-1 bg-[#F5ECE0] px-2 py-0.5 rounded-md">
-                        👥 {product.serves}
+                    <span className="flex flex-col min-w-0 text-left">
+                      <span className="flex items-center gap-2">
+                        <span className="font-serif font-bold text-sm sm:text-base text-[#2C2523] group-hover:text-[#9A722C] transition-colors truncate">
+                          {item.title}
+                        </span>
+                        {item.badge && (
+                          <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-full bg-[#9A722C] text-white shrink-0">
+                            {item.badge}
+                          </span>
+                        )}
                       </span>
-                    )}
-                    {product.dimensions && (
-                      <span className="inline-flex items-center gap-1 bg-[#F5ECE0] px-2 py-0.5 rounded-md">
-                        📏 {product.dimensions}
+                      <span className="text-xs text-[#7A6A53] truncate font-normal mt-0.5">
+                        {item.subtitle}
                       </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Card Actions */}
-                <div className="mt-4 pt-3 border-t border-[#F5ECE0] flex items-center justify-between gap-2">
-                  <span className="text-xs font-semibold text-[#9A722C] group-hover:underline">
-                    Ver Composição →
+                    </span>
                   </span>
-                  <a
-                    href={getWhatsAppOrderLink(product)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-medium shadow-2xs transition-all"
-                  >
-                    <WhatsAppOutlined />
-                    <span>Pedir</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Empty Search State */}
-        {filteredProducts.length === 0 && (
-          <div className="w-full py-16 text-center bg-white rounded-2xl border border-[#ECE2D2] p-8 mb-12">
-            <CoffeeOutlined className="text-4xl text-[#C4B29E] mb-3" />
-            <h3 className="text-base font-serif font-semibold text-[#2C2523]">
-              Nenhum item encontrado
-            </h3>
-            <p className="text-xs text-[#7A6A53] mt-1 max-w-sm mx-auto">
-              Não encontramos resultados para &quot;{searchQuery}&quot;. Tente buscar por outros termos ou selecione outra categoria.
-            </p>
-            <Button
-              className="mt-4"
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedCategory("todos");
-              }}
-            >
-              Ver Cardápio Completo
-            </Button>
-          </div>
-        )}
-
-        {/* =========================================================
-            ADD-ONS & COMPLEMENTOS SECTION
-           ========================================================= */}
-        <section className="w-full mb-12 bg-white rounded-3xl border border-[#ECE2D2] p-5 sm:p-7 shadow-xs">
-          <div className="text-center mb-6">
-            <span className="text-[11px] font-semibold tracking-wider uppercase text-[#9A722C]">
-              Personalize seu Presente
-            </span>
-            <h2 className="text-xl font-serif font-bold text-[#231D1A] mt-0.5">
-              Mimos & Itens Agregáveis
-            </h2>
-            <p className="text-xs text-[#6A5F5B] mt-1 max-w-md mx-auto">
-              Adicione fotos polaroid, balões temáticos, bolos artesanais ou vinhos extras para tornar sua cesta inesquecível.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            {ADDONS.map((addon) => (
-              <div
-                key={addon.id}
-                className="flex items-center justify-between p-3.5 rounded-xl bg-[#FAF7F2] border border-[#EAE0D1] hover:border-[#9A722C] transition-all"
-              >
-                <div>
-                  <h4 className="text-xs sm:text-sm font-semibold text-[#2C2523]">
-                    {addon.name}
-                  </h4>
-                  {addon.description && (
-                    <p className="text-[11px] text-[#7A6A53] mt-0.5">
-                      {addon.description}
-                    </p>
-                  )}
-                </div>
-                <div className="text-right shrink-0 ml-3">
-                  <span className="text-xs font-bold text-[#9A722C]">
-                    {addon.formattedPrice}
+                  <span className="shrink-0 flex items-center gap-1 text-[#9A722C] opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                    <span className="text-[11px] font-medium hidden sm:inline">
+                      Abrir PDF
+                    </span>
+                    <FilePdfOutlined className="text-base" />
                   </span>
-                </div>
-              </div>
+                </span>
+              </Button>
             ))}
-          </div>
+          </Space>
         </section>
 
         {/* =========================================================
             HOW TO ORDER / ORDER STEPS
            ========================================================= */}
-        <section className="w-full mb-12 bg-gradient-to-b from-[#FAF4EC] to-[#F5ECE0] rounded-3xl border border-[#E8DEC9] p-6 sm:p-8 text-center">
-          <GiftOutlined className="text-3xl text-[#9A722C] mb-2" />
-          <h2 className="text-xl font-serif font-bold text-[#231D1A]">
+        <section className="w-full max-w-md mb-8 bg-gradient-to-b from-[#FAF4EC] to-[#F5ECE0] rounded-3xl border border-[#E8DEC9] p-5 sm:p-6 text-center shadow-xs">
+          <GiftOutlined className="text-2xl text-[#9A722C] mb-2" />
+          <h3 className="text-base font-serif font-bold text-[#231D1A]">
             Como Funciona a sua Encomenda
-          </h2>
-          <p className="text-xs text-[#6A5F5B] mt-1 max-w-lg mx-auto leading-relaxed">
-            Todas as nossas criações são feitas sob medida com ingredientes frescos de altíssima qualidade.
+          </h3>
+          <p className="text-xs text-[#6A5F5B] mt-1 leading-relaxed">
+            Todas as nossas criações são preparadas sob medida com ingredientes frescos de altíssima qualidade.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 text-left">
-            <div className="bg-white/80 backdrop-blur-xs p-4 rounded-2xl border border-white/60">
-              <span className="w-6 h-6 rounded-full bg-[#9A722C] text-white flex items-center justify-center text-xs font-bold mb-2">
+          <div className="flex flex-col gap-2.5 mt-4 text-left">
+            <div className="bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-white/60 flex items-center gap-3">
+              <span className="w-6 h-6 rounded-full bg-[#9A722C] text-white flex items-center justify-center text-xs font-bold shrink-0">
                 1
               </span>
-              <h4 className="text-xs font-bold text-[#2C2523]">Escolha o Produto</h4>
-              <p className="text-[11px] text-[#6A5F5B] mt-1">
-                Navegue pelas cestas, boxes ou tábuas e clique no botão de pedido.
-              </p>
+              <div>
+                <h4 className="text-xs font-bold text-[#2C2523]">Escolha no Catálogo</h4>
+                <p className="text-[11px] text-[#6A5F5B]">
+                  Abra o PDF desejado nos botões acima e confira as opções e composições.
+                </p>
+              </div>
             </div>
 
-            <div className="bg-white/80 backdrop-blur-xs p-4 rounded-2xl border border-white/60">
-              <span className="w-6 h-6 rounded-full bg-[#9A722C] text-white flex items-center justify-center text-xs font-bold mb-2">
+            <div className="bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-white/60 flex items-center gap-3">
+              <span className="w-6 h-6 rounded-full bg-[#9A722C] text-white flex items-center justify-center text-xs font-bold shrink-0">
                 2
               </span>
-              <h4 className="text-xs font-bold text-[#2C2523]">Personalize no WhatsApp</h4>
-              <p className="text-[11px] text-[#6A5F5B] mt-1">
-                Defina mensagem do cartão, flores, opções de rótulo e adicionais com a Geraldina.
-              </p>
+              <div>
+                <h4 className="text-xs font-bold text-[#2C2523]">Personalize no WhatsApp</h4>
+                <p className="text-[11px] text-[#6A5F5B]">
+                  Defina mensagem do cartão, flores, rótulos e adicionais com a Geraldina.
+                </p>
+              </div>
             </div>
 
-            <div className="bg-white/80 backdrop-blur-xs p-4 rounded-2xl border border-white/60">
-              <span className="w-6 h-6 rounded-full bg-[#9A722C] text-white flex items-center justify-center text-xs font-bold mb-2">
+            <div className="bg-white/80 backdrop-blur-xs p-3 rounded-xl border border-white/60 flex items-center gap-3">
+              <span className="w-6 h-6 rounded-full bg-[#9A722C] text-white flex items-center justify-center text-xs font-bold shrink-0">
                 3
               </span>
-              <h4 className="text-xs font-bold text-[#2C2523]">Entrega com Carinho</h4>
-              <p className="text-[11px] text-[#6A5F5B] mt-1">
-                Agende data e horário para surpreender alguém especial em Irecê e região.
-              </p>
+              <div>
+                <h4 className="text-xs font-bold text-[#2C2523]">Entrega com Carinho</h4>
+                <p className="text-[11px] text-[#6A5F5B]">
+                  Agende data e horário para surpreender alguém especial em Irecê e região.
+                </p>
+              </div>
             </div>
-          </div>
-
-          <div className="mt-6 pt-5 border-t border-[#E8DEC9]/70 text-xs text-[#7A6A53] max-w-md mx-auto">
-            <p>
-              📦 <strong>Garantia de Apresentação:</strong> {STORE_INFO.standardPackagingNote}
-            </p>
           </div>
         </section>
 
         {/* =========================================================
             FOOTER
            ========================================================= */}
-        <footer className="w-full text-center py-6 border-t border-[#E8DEC9] text-xs text-[#8A7969]">
+        <footer className="w-full max-w-md text-center py-6 border-t border-[#E8DEC9] text-xs text-[#8A7969]">
           <p className="font-serif font-semibold text-[#2C2523]">
             {STORE_INFO.brand}
           </p>
@@ -438,175 +298,6 @@ export default function HomePage() {
           </p>
         </footer>
       </div>
-
-      {/* =========================================================
-          PRODUCT DETAIL MODAL (Ant Design Modal)
-         ========================================================= */}
-      <Modal
-        open={!!selectedProduct}
-        onCancel={() => setSelectedProduct(null)}
-        footer={null}
-        width={560}
-        centered
-        className="product-detail-modal"
-      >
-        {selectedProduct && (
-          <div className="pt-2">
-            {/* Modal Image */}
-            <div className="relative w-full h-64 sm:h-72 rounded-2xl overflow-hidden bg-[#F4EFEA] mb-4">
-              <Image
-                src={selectedProduct.image}
-                alt={selectedProduct.name}
-                fill
-                sizes="(max-width: 640px) 100vw, 560px"
-                className="object-cover object-center"
-              />
-              <div className="absolute top-3 left-3">
-                <Tag color="#9A722C" className="rounded-full px-3 py-0.5 text-xs">
-                  {selectedProduct.category}
-                </Tag>
-              </div>
-            </div>
-
-            {/* Title & Price */}
-            <div className="flex items-start justify-between gap-3 mb-2">
-              <div>
-                <h2 className="text-xl font-serif font-bold text-[#231D1A]">
-                  {selectedProduct.name}
-                </h2>
-                <p className="text-xs text-[#7A6A53] mt-0.5">
-                  {selectedProduct.shortDescription}
-                </p>
-              </div>
-              <div className="text-right shrink-0">
-                <span className="text-lg font-bold text-[#9A722C]">
-                  {selectedVariation
-                    ? selectedVariation.formattedPrice
-                    : selectedProduct.formattedPrice}
-                </span>
-              </div>
-            </div>
-
-            {/* Price Variations Radio (if any) */}
-            {selectedProduct.priceVariations &&
-              selectedProduct.priceVariations.length > 0 && (
-                <div className="mt-4 p-3.5 rounded-xl bg-[#FAF7F2] border border-[#EAE0D1]">
-                  <span className="text-xs font-semibold text-[#2C2523] block mb-2">
-                    Selecione a opção desejada:
-                  </span>
-                  <Radio.Group
-                    value={selectedVariation?.label}
-                    onChange={(e) => {
-                      const found = selectedProduct.priceVariations?.find(
-                        (v) => v.label === e.target.value
-                      );
-                      if (found) setSelectedVariation(found);
-                    }}
-                    className="w-full flex flex-col gap-2"
-                  >
-                    {selectedProduct.priceVariations.map((v) => (
-                      <Radio
-                        key={v.label}
-                        value={v.label}
-                        className="text-xs! flex justify-between items-center w-full"
-                      >
-                        <span className="font-medium text-[#2C2523]">
-                          {v.label}
-                        </span>{" "}
-                        —{" "}
-                        <strong className="text-[#9A722C]">
-                          {v.formattedPrice}
-                        </strong>
-                      </Radio>
-                    ))}
-                  </Radio.Group>
-                </div>
-              )}
-
-            {/* Dimensions / Serves / Packaging Info */}
-            <div className="grid grid-cols-2 gap-2 mt-4 text-xs">
-              {selectedProduct.dimensions && (
-                <div className="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#EAE0D1]">
-                  <span className="text-[10px] uppercase tracking-wider text-[#9A722C] font-semibold block">
-                    Dimensões
-                  </span>
-                  <span className="text-[#2C2523] font-medium">
-                    {selectedProduct.dimensions}
-                  </span>
-                </div>
-              )}
-              {selectedProduct.serves && (
-                <div className="p-2.5 rounded-xl bg-[#FAF7F2] border border-[#EAE0D1]">
-                  <span className="text-[10px] uppercase tracking-wider text-[#9A722C] font-semibold block">
-                    Rendimento
-                  </span>
-                  <span className="text-[#2C2523] font-medium">
-                    {selectedProduct.serves}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Items Composition */}
-            <div className="mt-5">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#9A722C] mb-2.5">
-                O que compõe este item:
-              </h4>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-[#4A3D36]">
-                {selectedProduct.items.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <CheckCircleFilled className="text-[#9A722C] text-xs mt-0.5 shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Notes / Observações (e.g. heating brie) */}
-            {selectedProduct.notes && selectedProduct.notes.length > 0 && (
-              <div className="mt-4 p-3 rounded-xl bg-[#FFF9E6] border border-[#FFE7A8] text-xs text-[#7A5B00]">
-                <div className="font-semibold flex items-center gap-1.5 mb-1">
-                  <InfoCircleOutlined /> Observações Importantes:
-                </div>
-                <ul className="list-disc pl-4 space-y-0.5 text-[11px]">
-                  {selectedProduct.notes.map((note, idx) => (
-                    <li key={idx}>{note}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Packaging info */}
-            {selectedProduct.packaging && (
-              <p className="mt-4 text-[11px] text-[#7A6A53] italic">
-                🎁 <strong>Embalagem:</strong> {selectedProduct.packaging}
-              </p>
-            )}
-
-            {/* CTA Order Button */}
-            <div className="mt-6 pt-4 border-t border-[#ECE2D2]">
-              <a
-                href={getWhatsAppOrderLink(
-                  selectedProduct,
-                  selectedVariation || undefined
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full h-12 flex items-center justify-center gap-2 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white font-medium text-sm shadow-md transition-all duration-200"
-              >
-                <WhatsAppOutlined className="text-xl" />
-                <span>
-                  Pedir pelo WhatsApp (
-                  {selectedVariation
-                    ? selectedVariation.formattedPrice
-                    : selectedProduct.formattedPrice}
-                  )
-                </span>
-              </a>
-            </div>
-          </div>
-        )}
-      </Modal>
     </div>
   );
 }
